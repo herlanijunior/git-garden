@@ -1,5 +1,13 @@
 export type AnimalType = 'duck' | 'cat' | 'dog' | 'bird' | 'chicken' | 'unicorn' | 'octocat';
 
+export interface FileChange {
+  path: string;
+  status: 'added' | 'modified' | 'deleted' | 'renamed';
+  additions?: number;
+  deletions?: number;
+  oldPath?: string;
+}
+
 export interface GitCommit {
   id: string;
   hash: string;
@@ -14,6 +22,7 @@ export interface GitCommit {
   isRemote?: boolean;
   x?: number;
   y?: number;
+  files?: FileChange[];
 }
 
 export interface GitBranch {

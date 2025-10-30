@@ -31,7 +31,11 @@ export const createSampleRepository = (): GitRepository => {
       author: authors[0],
       timestamp: new Date('2024-01-01T10:00:00'),
       parents: [],
-      branch: 'main'
+      branch: 'main',
+      files: [
+        { path: '.gitignore', status: 'added', additions: 15, deletions: 0 },
+        { path: 'package.json', status: 'added', additions: 25, deletions: 0 }
+      ]
     },
     {
       id: 'c2',
@@ -40,7 +44,10 @@ export const createSampleRepository = (): GitRepository => {
       author: authors[1],
       timestamp: new Date('2024-01-02T11:00:00'),
       parents: ['c1'],
-      branch: 'main'
+      branch: 'main',
+      files: [
+        { path: 'README.md', status: 'added', additions: 42, deletions: 0 }
+      ]
     },
     {
       id: 'c3',
@@ -49,7 +56,12 @@ export const createSampleRepository = (): GitRepository => {
       author: authors[2],
       timestamp: new Date('2024-01-03T09:00:00'),
       parents: ['c2'],
-      branch: 'main'
+      branch: 'main',
+      files: [
+        { path: 'src/index.js', status: 'added', additions: 18, deletions: 0 },
+        { path: 'src/App.js', status: 'added', additions: 35, deletions: 0 },
+        { path: 'public/index.html', status: 'added', additions: 22, deletions: 0 }
+      ]
     },
     {
       id: 'c4',
@@ -58,7 +70,11 @@ export const createSampleRepository = (): GitRepository => {
       author: authors[3],
       timestamp: new Date('2024-01-04T14:00:00'),
       parents: ['c3'],
-      branch: 'feature/login'
+      branch: 'feature/login',
+      files: [
+        { path: 'src/components/Login.js', status: 'added', additions: 52, deletions: 0 },
+        { path: 'src/components/Login.css', status: 'added', additions: 28, deletions: 0 }
+      ]
     },
     {
       id: 'c5',
@@ -67,7 +83,12 @@ export const createSampleRepository = (): GitRepository => {
       author: authors[3],
       timestamp: new Date('2024-01-05T10:00:00'),
       parents: ['c4'],
-      branch: 'feature/login'
+      branch: 'feature/login',
+      files: [
+        { path: 'src/services/auth.js', status: 'added', additions: 78, deletions: 0 },
+        { path: 'src/components/Login.js', status: 'modified', additions: 15, deletions: 8 },
+        { path: 'package.json', status: 'modified', additions: 2, deletions: 0 }
+      ]
     },
     {
       id: 'c6',
@@ -76,7 +97,10 @@ export const createSampleRepository = (): GitRepository => {
       author: authors[4],
       timestamp: new Date('2024-01-05T15:00:00'),
       parents: ['c3'],
-      branch: 'main'
+      branch: 'main',
+      files: [
+        { path: 'src/components/Header.css', status: 'modified', additions: 12, deletions: 5 }
+      ]
     },
     {
       id: 'c7',
@@ -85,7 +109,11 @@ export const createSampleRepository = (): GitRepository => {
       author: authors[3],
       timestamp: new Date('2024-01-06T11:00:00'),
       parents: ['c5'],
-      branch: 'feature/login'
+      branch: 'feature/login',
+      files: [
+        { path: 'src/services/auth.test.js', status: 'added', additions: 95, deletions: 0 },
+        { path: 'jest.config.js', status: 'added', additions: 12, deletions: 0 }
+      ]
     },
     {
       id: 'c8',
@@ -94,7 +122,15 @@ export const createSampleRepository = (): GitRepository => {
       author: authors[5],
       timestamp: new Date('2024-01-07T09:00:00'),
       parents: ['c6', 'c7'],
-      branch: 'main'
+      branch: 'main',
+      files: [
+        { path: 'src/components/Login.js', status: 'added', additions: 67, deletions: 0 },
+        { path: 'src/components/Login.css', status: 'added', additions: 28, deletions: 0 },
+        { path: 'src/services/auth.js', status: 'added', additions: 78, deletions: 0 },
+        { path: 'src/services/auth.test.js', status: 'added', additions: 95, deletions: 0 },
+        { path: 'jest.config.js', status: 'added', additions: 12, deletions: 0 },
+        { path: 'package.json', status: 'modified', additions: 2, deletions: 0 }
+      ]
     },
     {
       id: 'c9',
@@ -103,7 +139,10 @@ export const createSampleRepository = (): GitRepository => {
       author: authors[6],
       timestamp: new Date('2024-01-08T10:00:00'),
       parents: ['c8'],
-      branch: 'feature/dashboard'
+      branch: 'feature/dashboard',
+      files: [
+        { path: 'src/components/Dashboard.js', status: 'added', additions: 45, deletions: 0 }
+      ]
     },
     {
       id: 'c10',
@@ -112,7 +151,12 @@ export const createSampleRepository = (): GitRepository => {
       author: authors[6],
       timestamp: new Date('2024-01-09T14:00:00'),
       parents: ['c9'],
-      branch: 'feature/dashboard'
+      branch: 'feature/dashboard',
+      files: [
+        { path: 'src/components/Dashboard.js', status: 'modified', additions: 32, deletions: 12 },
+        { path: 'src/components/Dashboard.css', status: 'added', additions: 58, deletions: 0 },
+        { path: 'src/components/DashboardCard.js', status: 'added', additions: 28, deletions: 0 }
+      ]
     },
     {
       id: 'c11',
@@ -121,7 +165,10 @@ export const createSampleRepository = (): GitRepository => {
       author: authors[0],
       timestamp: new Date('2024-01-09T16:00:00'),
       parents: ['c8'],
-      branch: 'main'
+      branch: 'main',
+      files: [
+        { path: 'src/services/auth.js', status: 'modified', additions: 3, deletions: 2 }
+      ]
     },
     {
       id: 'c12',
@@ -130,7 +177,11 @@ export const createSampleRepository = (): GitRepository => {
       author: authors[1],
       timestamp: new Date('2024-01-10T10:00:00'),
       parents: ['c11'],
-      branch: 'main'
+      branch: 'main',
+      files: [
+        { path: 'package.json', status: 'modified', additions: 8, deletions: 8 },
+        { path: 'package-lock.json', status: 'modified', additions: 245, deletions: 187 }
+      ]
     }
   ];
 

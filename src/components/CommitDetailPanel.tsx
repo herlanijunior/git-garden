@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Badge } from '@/components/ui/badge';
 import { ConceptTooltip } from '@/components/ConceptTooltip';
 import { formatDistanceToNow } from 'date-fns';
-import { GitBranch, GitCommit as GitCommitIcon, User, Clock } from '@phosphor-icons/react';
+import { GitBranch, GitCommit as GitCommitIcon, User, Clock, File, FilePlus, FileMinus, FileArrowUp } from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
 
 interface CommitDetailPanelProps {
@@ -162,6 +162,93 @@ export const CommitDetailPanel = ({ commit, isOpen, onClose }: CommitDetailPanel
                   />
                 </motion.p>
               )}
+            </motion.div>
+          )}
+
+          {commit.files && commit.files.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <h3 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
+                <File size={16} />
+                Changed Files
+                <ConceptTooltip
+                  title="Changed Files"
+                  explanation="Files that were added, modified, deleted, or renamed in this commit. Each change contributes to the commit's snapshot."
+                  emoji="📄"
+                />
+              </h3>
+              <div className="space-y-2">
+                {commit.files.map((file, index) => {
+                  const statusConfig = {
+                    added: { 
+                      icon: <FilePlus size={16} weight="bold" />, 
+                      color: 'text-primary', 
+                      bg: 'bg-primary/10',
+                      label: 'A' 
+                    },
+                    modified: { 
+                      icon: <File size={16} weight="bold" />, 
+                      color: 'text-accent', 
+                      bg: 'bg-accent/10',
+                      label: 'M' 
+                    },
+                    deleted: { 
+                      icon: <FileMinus size={16} weight="bold" />, 
+                      color: 'text-destructive', 
+                      bg: 'bg-destructive/10',
+                      label: 'D' 
+                    },
+                    renamed: { 
+                      icon: <FileArrowUp size={16} weight="bold" />, 
+                      color: 'text-secondary', 
+                      bg: 'bg-secondary/10',
+                      label: 'R' 
+                    }
+                  };
+                  
+                  const config = statusConfig[file.status];
+                  
+                  return (
+                    <motion.div
+                      key={`${file.path}-${index}`}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.35 + index * 0.05 }}
+                      className="flex items-center gap-2 p-2 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                    >
+                      <div className={`flex items-center justify-center w-6 h-6 rounded ${config.bg} ${config.color}`}>
+                        {config.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm mono truncate" title={file.path}>
+                          {file.path}
+                        </p>
+                        {file.status === 'renamed' && file.oldPath && (
+                          <p className="text-xs text-muted-foreground mono truncate" title={file.oldPath}>
+                            from: {file.oldPath}
+                          </p>
+                        )}
+                        {(file.additions !== undefined || file.deletions !== undefined) && (
+                          <div className="flex gap-2 text-xs mt-1">
+                            {file.additions !== undefined && file.additions > 0 && (
+                              <span className="text-primary">+{file.additions}</span>
+                            )}
+                            {file.deletions !== undefined && file.deletions > 0 && (
+                              <span className="text-destructive">-{file.deletions}</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      <Badge variant="outline" className="text-xs shrink-0">
+                        {config.label}
+                      </Badge>
+                    </motion.div>
+                  );
+                })}
+              </div>
             </motion.div>
           )}
 
