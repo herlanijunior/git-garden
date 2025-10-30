@@ -48,7 +48,7 @@ export const TimelinePlayer = ({ commits, onTimelineUpdate }: TimelinePlayerProp
   useEffect(() => {
     const visibleCommits = sortedCommits.slice(0, currentIndex + 1).map(c => c.id);
     onTimelineUpdate(visibleCommits);
-  }, [currentIndex, sortedCommits, onTimelineUpdate]);
+  }, [currentIndex]);
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
