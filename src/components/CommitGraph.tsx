@@ -82,7 +82,7 @@ export const CommitGraph = ({
       >
         <path
           d={path}
-          stroke={isHighlighted ? 'var(--color-accent)' : 'var(--color-border)'}
+          stroke={isHighlighted ? 'var(--color-accent)' : 'var(--color-foreground)'}
           strokeWidth={edge.isMerge ? 3 : 2}
           fill="none"
           strokeDasharray={edge.from.isRemote || edge.to.isRemote ? '5,5' : undefined}
@@ -190,7 +190,7 @@ export const CommitGraph = ({
             orient="auto"
             markerUnits="strokeWidth"
           >
-            <path d="M0,0 L0,6 L9,3 z" fill="var(--color-border)" />
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--color-foreground)" />
           </marker>
         </defs>
 
