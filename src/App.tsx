@@ -10,17 +10,22 @@ import { CommitDetailPanel } from '@/components/CommitDetailPanel';
 import { ScenarioExplorer } from '@/components/ScenarioExplorer';
 import { FilterPanel } from '@/components/FilterPanel';
 import { TimelinePlayer } from '@/components/TimelinePlayer';
+import { CommandInput } from '@/components/CommandInput';
+import { ExplanationPanel } from '@/components/ExplanationPanel';
+import { ConceptTooltip } from '@/components/ConceptTooltip';
 import { createSampleRepository } from '@/lib/mockData';
 import { filterCommits } from '@/lib/graphLayout';
 import { GitRepository, Scenario } from '@/lib/types';
-import { Moon, Sun, GitBranch } from '@phosphor-icons/react';
+import { Moon, Sun, GitBranch, Info } from '@phosphor-icons/react';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 function App() {
   const [repository] = useState<GitRepository>(createSampleRepository());
   const [selectedCommitId, setSelectedCommitId] = useState<string | null>(null);
-  const [isDarkMode, setIsDarkMode, deleteIsDarkMode] = useKV<boolean>('dark-mode', false);
-  const [activeTab, setActiveTab, deleteActiveTab] = useKV<'explore' | 'scenarios' | 'timeline'>('active-tab', 'explore');
+  const [isDarkMode, setIsDarkMode] = useKV<boolean>('dark-mode', false);
+  const [activeTab, setActiveTab] = useKV<'explore' | 'scenarios' | 'timeline' | 'terminal'>('active-tab', 'explore');
+  const [showExplanations, setShowExplanations] = useKV<boolean>('show-explanations', true);
   const [filters, setFilters] = useState({
     branches: [] as string[],
     authors: [] as string[],
@@ -79,14 +84,36 @@ function App() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <GitBranch size={32} className="text-primary" weight="bold" />
+              <motion.div
+                whileHover={{ rotate: 15, scale: 1.1 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <GitBranch size={32} className="text-primary" weight="bold" />
+              </motion.div>
               <div>
-                <h1 className="text-2xl font-bold">Git Garden</h1>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl font-bold">Git Garden</h1>
+                  <ConceptTooltip
+                    title="Welcome to Git Garden!"
+                    explanation="An interactive playground for learning Git concepts through visual exploration. Click commits, try commands, and explore scenarios to master version control."
+                    emoji="🌿"
+                  />
+                </div>
                 <p className="text-sm text-muted-foreground">Learn Git Visually</p>
               </div>
             </div>
 
             <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="explanations-toggle" className="text-sm cursor-pointer">
+                  Explanations
+                </Label>
+                <Switch
+                  checked={showExplanations}
+                  onCheckedChange={setShowExplanations}
+                  id="explanations-toggle"
+                />
+              </div>
               <div className="flex items-center gap-2">
                 <Sun size={16} />
                 <Switch
@@ -102,11 +129,16 @@ function App() {
       </header>
 
       <main className="container mx-auto px-6 py-6">
-        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as 'explore' | 'scenarios' | 'timeline')}>
+        <Tabs value={activeTab} onValueChange={(val) => {
+          if (val === 'explore' || val === 'scenarios' || val === 'timeline' || val === 'terminal') {
+            setActiveTab(val);
+          }
+        }}>
           <TabsList className="mb-6">
             <TabsTrigger value="explore">Explore</TabsTrigger>
             <TabsTrigger value="scenarios">Scenarios</TabsTrigger>
             <TabsTrigger value="timeline">Timeline</TabsTrigger>
+            <TabsTrigger value="terminal">Terminal</TabsTrigger>
           </TabsList>
 
           <TabsContent value="explore" className="space-y-4">
@@ -116,13 +148,29 @@ function App() {
               onFilterChange={setFilters}
             />
             
-            <div className="h-[600px]">
-              <CommitGraph
-                repository={filteredRepository}
-                selectedCommit={selectedCommitId || undefined}
-                onCommitClick={setSelectedCommitId}
-                animateTransitions={true}
-              />
+            <div className={`grid gap-4 ${showExplanations ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1'}`}>
+              <div className={showExplanations ? 'lg:col-span-2' : 'col-span-1'}>
+                <div className="h-[600px]">
+                  <CommitGraph
+                    repository={filteredRepository}
+                    selectedCommit={selectedCommitId || undefined}
+                    onCommitClick={setSelectedCommitId}
+                    animateTransitions={true}
+                  />
+                </div>
+              </div>
+              
+              {showExplanations && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                  className="h-[600px]"
+                >
+                  <ExplanationPanel />
+                </motion.div>
+              )}
             </div>
           </TabsContent>
 
@@ -136,13 +184,53 @@ function App() {
               onTimelineUpdate={setTimelineVisibleCommits}
             />
             
-            <div className="h-[600px]">
-              <CommitGraph
-                repository={filteredRepository}
-                selectedCommit={selectedCommitId || undefined}
-                onCommitClick={setSelectedCommitId}
-                animateTransitions={true}
-              />
+            <div className={`grid gap-4 ${showExplanations ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1'}`}>
+              <div className={showExplanations ? 'lg:col-span-2' : 'col-span-1'}>
+                <div className="h-[600px]">
+                  <CommitGraph
+                    repository={filteredRepository}
+                    selectedCommit={selectedCommitId || undefined}
+                    onCommitClick={setSelectedCommitId}
+                    animateTransitions={true}
+                  />
+                </div>
+              </div>
+              
+              {showExplanations && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                  className="h-[600px]"
+                >
+                  <ExplanationPanel />
+                </motion.div>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="terminal" className="space-y-4">
+            <div className={`grid gap-4 ${showExplanations ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1'}`}>
+              <div className={showExplanations ? 'lg:col-span-2' : 'col-span-1'}>
+                <div className="h-[600px]">
+                  <CommandInput onCommandExecute={(cmd) => {
+                    console.log('Command executed:', cmd);
+                  }} />
+                </div>
+              </div>
+              
+              {showExplanations && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                  className="h-[600px]"
+                >
+                  <ExplanationPanel />
+                </motion.div>
+              )}
             </div>
           </TabsContent>
         </Tabs>

@@ -5,8 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { ConceptTooltip } from '@/components/ConceptTooltip';
 import { FunnelSimple, X } from '@phosphor-icons/react';
 import { GitBranch } from '@/lib/types';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface FilterPanelProps {
   branches: GitBranch[];
@@ -61,6 +63,11 @@ export const FilterPanel = ({ branches, authors, onFilterChange }: FilterPanelPr
           <CardTitle className="text-lg flex items-center gap-2">
             <FunnelSimple size={20} />
             Filters
+            <ConceptTooltip
+              title="Filter Commits"
+              explanation="Focus on specific commits by filtering by branch, author, or searching commit messages and hashes."
+              emoji="🔍"
+            />
             {hasActiveFilters && (
               <Badge variant="secondary" className="ml-2">
                 {(selectedBranches.length + selectedAuthors.length + (searchQuery ? 1 : 0))}
@@ -84,61 +91,103 @@ export const FilterPanel = ({ branches, authors, onFilterChange }: FilterPanelPr
         </div>
       </CardHeader>
 
-      {isExpanded && (
-        <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="search">Search</Label>
-            <Input
-              id="search"
-              placeholder="Search commits, hashes, messages..."
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="mt-2"
-            />
-          </div>
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="search" className="flex items-center gap-2">
+                  Search
+                  <ConceptTooltip
+                    title="Search Commits"
+                    explanation="Search through commit messages, hashes, and other metadata to find specific commits."
+                    emoji="🔎"
+                  />
+                </Label>
+                <Input
+                  id="search"
+                  placeholder="Search commits, hashes, messages..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className="mt-2"
+                />
+              </div>
 
-          <div>
-            <Label className="mb-2 block">Branches</Label>
-            <div className="flex flex-wrap gap-2">
-              {branches.map(branch => (
-                <Badge
-                  key={branch.name}
-                  variant={selectedBranches.includes(branch.name) ? 'default' : 'outline'}
-                  className="cursor-pointer"
-                  onClick={() => handleBranchToggle(branch.name)}
-                  style={{
-                    backgroundColor: selectedBranches.includes(branch.name) ? branch.color : undefined
-                  }}
-                >
-                  {branch.name}
-                  {selectedBranches.includes(branch.name) && (
-                    <X size={14} className="ml-1" />
-                  )}
-                </Badge>
-              ))}
-            </div>
-          </div>
+              <div>
+                <Label className="mb-2 flex items-center gap-2">
+                  Branches
+                  <ConceptTooltip
+                    title="Filter by Branch"
+                    explanation="Show only commits that belong to selected branches. Click a branch badge to toggle filtering."
+                    emoji="🌿"
+                  />
+                </Label>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {branches.map((branch, index) => (
+                    <motion.div
+                      key={branch.name}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <Badge
+                        variant={selectedBranches.includes(branch.name) ? 'default' : 'outline'}
+                        className="cursor-pointer transition-transform hover:scale-105"
+                        onClick={() => handleBranchToggle(branch.name)}
+                        style={{
+                          backgroundColor: selectedBranches.includes(branch.name) ? branch.color : undefined
+                        }}
+                      >
+                        {branch.name}
+                        {selectedBranches.includes(branch.name) && (
+                          <X size={14} className="ml-1" />
+                        )}
+                      </Badge>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
 
-          <div>
-            <Label className="mb-2 block">Authors</Label>
-            <div className="flex flex-wrap gap-2">
-              {authors.map(author => (
-                <Badge
-                  key={author}
-                  variant={selectedAuthors.includes(author) ? 'default' : 'outline'}
-                  className="cursor-pointer"
-                  onClick={() => handleAuthorToggle(author)}
-                >
-                  {author}
-                  {selectedAuthors.includes(author) && (
-                    <X size={14} className="ml-1" />
-                  )}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        </CardContent>
-      )}
+              <div>
+                <Label className="mb-2 flex items-center gap-2">
+                  Authors
+                  <ConceptTooltip
+                    title="Filter by Author"
+                    explanation="Show only commits created by selected authors. Each author is represented by their cute animal avatar!"
+                    emoji="👥"
+                  />
+                </Label>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {authors.map((author, index) => (
+                    <motion.div
+                      key={author}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <Badge
+                        variant={selectedAuthors.includes(author) ? 'default' : 'outline'}
+                        className="cursor-pointer transition-transform hover:scale-105"
+                        onClick={() => handleAuthorToggle(author)}
+                      >
+                        {author}
+                        {selectedAuthors.includes(author) && (
+                          <X size={14} className="ml-1" />
+                        )}
+                      </Badge>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Card>
   );
 };

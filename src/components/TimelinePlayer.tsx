@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { Play, Pause, FastForward, Rewind } from '@phosphor-icons/react';
+import { ConceptTooltip } from '@/components/ConceptTooltip';
+import { Play, Pause, FastForward, Rewind, Clock } from '@phosphor-icons/react';
 import { GitCommit } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
+import { motion } from 'framer-motion';
 
 interface TimelinePlayerProps {
   commits: GitCommit[];
@@ -76,14 +78,28 @@ export const TimelinePlayer = ({ commits, onTimelineUpdate }: TimelinePlayerProp
       <CardContent className="pt-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold">Timeline Playback</h3>
+            <h3 className="font-semibold flex items-center gap-2">
+              <Clock size={20} className="text-primary" />
+              Timeline Playback
+              <ConceptTooltip
+                title="Timeline Playback"
+                explanation="Watch your repository evolve over time! Use the timeline to see commits appear chronologically and understand how the project developed."
+                emoji="⏱️"
+              />
+            </h3>
             <Badge variant="secondary">
               {currentIndex + 1} / {sortedCommits.length}
             </Badge>
           </div>
 
           {currentCommit && (
-            <div className="p-3 bg-muted rounded-lg">
+            <motion.div
+              key={currentCommit.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              className="p-3 bg-muted rounded-lg"
+            >
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-xs mono text-muted-foreground">
                   {currentCommit.hash}
@@ -97,7 +113,7 @@ export const TimelinePlayer = ({ commits, onTimelineUpdate }: TimelinePlayerProp
                 {currentCommit.timestamp.toLocaleDateString()} at{' '}
                 {currentCommit.timestamp.toLocaleTimeString()}
               </p>
-            </div>
+            </motion.div>
           )}
 
           <div className="space-y-2">
@@ -112,32 +128,60 @@ export const TimelinePlayer = ({ commits, onTimelineUpdate }: TimelinePlayerProp
 
           <div className="flex items-center justify-between">
             <div className="flex gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleReset}
-                disabled={currentIndex === 0}
+              <ConceptTooltip
+                title="Reset Timeline"
+                explanation="Jump to the first commit in the timeline."
+                emoji="⏮️"
+                asChild
               >
-                <Rewind size={16} />
-              </Button>
-              <Button
-                size="sm"
-                onClick={handlePlayPause}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleReset}
+                  disabled={currentIndex === 0}
+                >
+                  <Rewind size={16} />
+                </Button>
+              </ConceptTooltip>
+              <ConceptTooltip
+                title={isPlaying ? "Pause" : "Play Timeline"}
+                explanation={isPlaying ? "Pause the automatic playback." : "Watch commits appear automatically over time."}
+                emoji={isPlaying ? "⏸️" : "▶️"}
+                asChild
               >
-                {isPlaying ? <Pause size={16} weight="fill" /> : <Play size={16} weight="fill" />}
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleEnd}
-                disabled={currentIndex === sortedCommits.length - 1}
+                <Button
+                  size="sm"
+                  onClick={handlePlayPause}
+                >
+                  {isPlaying ? <Pause size={16} weight="fill" /> : <Play size={16} weight="fill" />}
+                </Button>
+              </ConceptTooltip>
+              <ConceptTooltip
+                title="Jump to End"
+                explanation="Skip to the most recent commit."
+                emoji="⏭️"
+                asChild
               >
-                <FastForward size={16} />
-              </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleEnd}
+                  disabled={currentIndex === sortedCommits.length - 1}
+                >
+                  <FastForward size={16} />
+                </Button>
+              </ConceptTooltip>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Speed:</span>
+              <span className="text-sm text-muted-foreground flex items-center gap-1">
+                Speed:
+                <ConceptTooltip
+                  title="Playback Speed"
+                  explanation="Control how fast commits appear during automatic playback. Higher speeds help you quickly scan through history."
+                  emoji="⚡"
+                />
+              </span>
               <div className="flex gap-1">
                 {[0.5, 1, 2, 3].map(s => (
                   <Button
