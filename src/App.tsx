@@ -51,11 +51,11 @@ function App() {
 
   const handleScenarioSelect = (scenario: Scenario) => {
     toast.success(`Starting scenario: ${scenario.title}`);
-    setActiveTab(() => 'explore');
+    setActiveTab('explore');
   };
 
   const handleThemeToggle = (checked: boolean) => {
-    setIsDarkMode(() => checked);
+    setIsDarkMode(checked);
     if (checked) {
       document.documentElement.classList.add('dark');
     } else {
@@ -102,7 +102,7 @@ function App() {
       </header>
 
       <main className="container mx-auto px-6 py-6">
-        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(() => val as 'explore' | 'scenarios' | 'timeline')}>
+        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as 'explore' | 'scenarios' | 'timeline')}>
           <TabsList className="mb-6">
             <TabsTrigger value="explore">Explore</TabsTrigger>
             <TabsTrigger value="scenarios">Scenarios</TabsTrigger>
